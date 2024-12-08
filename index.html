@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Model Viewer</title>
+    <style>
+      body {
+        margin: 0;
+      }
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script>
+      // Scene setup
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(
+        75,
+        window.innerWidth / window.innerHeight,
+        0.1,
+        1000
+      );
+      const renderer = new THREE.WebGLRenderer();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      // Lighting
+      const light = new THREE.DirectionalLight(0xffffff, 1);
+      light.position.set(1, 1, 1).normalize();
+      scene.add(light);
+
+      // Load 3D Model
+      const loader = new THREE.GLTFLoader();
+      loader.load("YOUR_GLTF_FILE_URL", function (gltf) {
+        const model = gltf.scene;
+        scene.add(model);
+
+        // Rotate model interactively
+        let isDragging = false,
+          previousMousePosition = { x: 0, y: 0 };
+        document.addEventListener("mousedown", () => (isDragging = true));
+        document.addEventListener("mouseup", () => (isDragging = false));
+        document.addEventListener("mousemove", (event) => {
+          if (isDragging) {
+            const deltaMove = {
+              x: event.offsetX - previousMousePosition.x,
+              y: event.offsetY - previousMousePosition.y,
+            };
+            model.rotation.y += deltaMove.x * 0.01;
+            model.rotation.x += deltaMove.y * 0.01;
+          }
+          previousMousePosition = { x: event.offsetX, y: event.offsetY };
+        });
+      });
+
+      camera.position.z = 5;
+
+      // Animation loop
+      function animate() {
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
+      }
+      animate();
+    </script>
+  </body>
+</html>
