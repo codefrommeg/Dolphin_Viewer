@@ -17,8 +17,9 @@
   </head>
   <body>
     <script type="module">
-      import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.module.js";
-      import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.153.0/examples/jsm/loaders/GLTFLoader.js";
+      // Import ES Modules from Skypack CDN
+      import * as THREE from "https://cdn.skypack.dev/three@0.153.0";
+      import { GLTFLoader } from "https://cdn.skypack.dev/three@0.153.0/examples/jsm/loaders/GLTFLoader.js";
 
       // Scene setup
       const scene = new THREE.Scene();
@@ -44,6 +45,7 @@
 
       // Load 3D Model
       const loader = new GLTFLoader();
+      console.log("Attempting to load Dolphin.glb...");
       loader.load(
         "./Dolphin.glb",
         function (gltf) {
@@ -51,7 +53,6 @@
           const model = gltf.scene;
           scene.add(model);
 
-          // Adjust the initial position and scale of the model
           model.position.set(0, 0, 0);
           model.scale.set(1, 1, 1);
 
@@ -72,7 +73,9 @@
             previousMousePosition = { x: event.offsetX, y: event.offsetY };
           });
         },
-        undefined,
+        function (xhr) {
+          console.log(`Loading progress: ${(xhr.loaded / xhr.total) * 100}%`);
+        },
         function (error) {
           console.error("Error loading the model:", error);
         }
