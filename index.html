@@ -17,18 +17,17 @@
   </head>
   <body>
     <script type="module">
-      console.log("Importing Three.js and GLTFLoader modules...");
+      console.log("Starting Three.js application...");
 
-      // Import ES Modules directly from jsDelivr
+      // Import Three.js and GLTFLoader from a CDN
       import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.module.js";
       import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.153.0/examples/jsm/loaders/GLTFLoader.js";
 
-      console.log("Starting 3D model viewer...");
+      console.log("Three.js and GLTFLoader imported successfully.");
 
-      // Scene setup
+      // Set up the scene, camera, and renderer
       const scene = new THREE.Scene();
       scene.background = new THREE.Color(0x000000);
-      console.log("Scene initialized.");
 
       const camera = new THREE.PerspectiveCamera(
         75,
@@ -37,41 +36,36 @@
         1000
       );
       camera.position.z = 5;
-      console.log(
-        "Camera initialized with aspect ratio:",
-        window.innerWidth / window.innerHeight
-      );
 
       const renderer = new THREE.WebGLRenderer();
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
-      console.log("Renderer initialized and added to DOM.");
 
-      // Lighting
-      const light = new THREE.AmbientLight(0xffffff, 0.8);
-      scene.add(light);
-      console.log("Lighting added to the scene.");
+      // Add lights to the scene
+      const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+      directionalLight.position.set(1, 1, 1);
+      scene.add(directionalLight);
 
-      // Load 3D Model
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+      scene.add(ambientLight);
+
+      // Load the 3D model
       const loader = new GLTFLoader();
-      console.log("Attempting to load Dolphin.glb...");
+      console.log("Loading Dolphin.glb...");
       loader.load(
         "./Dolphin.glb",
-        function (gltf) {
-          console.log("Model loaded successfully:", gltf);
+        (gltf) => {
           const model = gltf.scene;
           scene.add(model);
-
-          // Adjust the model's position and scale
           model.position.set(0, 0, 0);
           model.scale.set(1, 1, 1);
-          console.log("Model added to scene.");
+          console.log("Model loaded successfully.");
         },
-        function (xhr) {
+        (xhr) => {
           console.log(`Loading progress: ${(xhr.loaded / xhr.total) * 100}%`);
         },
-        function (error) {
-          console.error("Error loading the model:", error);
+        (error) => {
+          console.error("Error loading model:", error);
         }
       );
 
@@ -87,7 +81,6 @@
         camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
         renderer.setSize(window.innerWidth, window.innerHeight);
-        console.log("Window resized. Renderer and camera updated.");
       });
     </script>
   </body>
