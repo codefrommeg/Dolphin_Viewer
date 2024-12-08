@@ -8,6 +8,7 @@
       body {
         margin: 0;
         overflow: hidden;
+        background-color: black;
       }
       canvas {
         display: block;
@@ -20,6 +21,8 @@
     <script>
       // Scene setup
       const scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x000000); // Set background to black
+
       const camera = new THREE.PerspectiveCamera(
         75,
         window.innerWidth / window.innerHeight,
