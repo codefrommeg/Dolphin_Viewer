@@ -7,6 +7,7 @@
     <style>
       body {
         margin: 0;
+        overflow: hidden;
       }
       canvas {
         display: block;
@@ -36,28 +37,40 @@
 
       // Load 3D Model
       const loader = new THREE.GLTFLoader();
-      loader.load("YOUR_GLTF_FILE_URL", function (gltf) {
-        const model = gltf.scene;
-        scene.add(model);
+      loader.load(
+        "Dolphin.glb",
+        function (gltf) {
+          const model = gltf.scene;
+          scene.add(model);
 
-        // Rotate model interactively
-        let isDragging = false,
-          previousMousePosition = { x: 0, y: 0 };
-        document.addEventListener("mousedown", () => (isDragging = true));
-        document.addEventListener("mouseup", () => (isDragging = false));
-        document.addEventListener("mousemove", (event) => {
-          if (isDragging) {
-            const deltaMove = {
-              x: event.offsetX - previousMousePosition.x,
-              y: event.offsetY - previousMousePosition.y,
-            };
-            model.rotation.y += deltaMove.x * 0.01;
-            model.rotation.x += deltaMove.y * 0.01;
-          }
-          previousMousePosition = { x: event.offsetX, y: event.offsetY };
-        });
-      });
+          // Adjust the initial position and scale of the model
+          model.position.set(0, 0, 0);
+          model.scale.set(1, 1, 1);
 
+          // Enable rotation on mouse drag
+          let isDragging = false,
+            previousMousePosition = { x: 0, y: 0 };
+          document.addEventListener("mousedown", () => (isDragging = true));
+          document.addEventListener("mouseup", () => (isDragging = false));
+          document.addEventListener("mousemove", (event) => {
+            if (isDragging) {
+              const deltaMove = {
+                x: event.offsetX - previousMousePosition.x,
+                y: event.offsetY - previousMousePosition.y,
+              };
+              model.rotation.y += deltaMove.x * 0.01;
+              model.rotation.x += deltaMove.y * 0.01;
+            }
+            previousMousePosition = { x: event.offsetX, y: event.offsetY };
+          });
+        },
+        undefined,
+        function (error) {
+          console.error("An error occurred while loading the model:", error);
+        }
+      );
+
+      // Set up the camera position
       camera.position.z = 5;
 
       // Animation loop
@@ -66,6 +79,13 @@
         renderer.render(scene, camera);
       }
       animate();
+
+      // Handle window resizing
+      window.addEventListener("resize", () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
     </script>
   </body>
 </html>
