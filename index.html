@@ -16,12 +16,10 @@
     </style>
   </head>
   <body>
-    <!-- Three.js Core -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.min.js"></script>
-    <!-- GLTF Loader -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.153.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script type="module">
+      import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.153.0/build/three.module.js";
+      import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.153.0/examples/jsm/loaders/GLTFLoader.js";
 
-    <script>
       // Scene setup
       const scene = new THREE.Scene();
       scene.background = new THREE.Color(0x000000);
@@ -45,10 +43,11 @@
       scene.add(ambientLight);
 
       // Load 3D Model
-      const loader = new THREE.GLTFLoader();
+      const loader = new GLTFLoader();
       loader.load(
         "./Dolphin.glb",
         function (gltf) {
+          console.log("Model loaded successfully:", gltf);
           const model = gltf.scene;
           scene.add(model);
 
@@ -75,7 +74,7 @@
         },
         undefined,
         function (error) {
-          console.error("An error occurred while loading the model:", error);
+          console.error("Error loading the model:", error);
         }
       );
 
